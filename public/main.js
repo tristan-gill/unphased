@@ -198,7 +198,7 @@ class Game {
     }
 
     const timeSinceLastFrame = timeStamp - this.lastFrameTime;
-    if (timeSinceLastFrame >= 16.7) {
+    if (timeSinceLastFrame >= 33.3) {
       this.lastFrameTime = timeStamp;
       this.update();
       this.draw();

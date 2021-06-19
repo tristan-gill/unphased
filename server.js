@@ -89,7 +89,6 @@ io.on('connection', (client) => {
   }
 
   function handlePlayerJump (playerNumber) {
-    console.log('handlePlayerJump', playerNumber)
     io.sockets.in(clientRooms[client.id]).emit('playerJump', playerNumber);
   }
 
