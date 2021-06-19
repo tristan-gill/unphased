@@ -1,0 +1,16 @@
+
+body {
+  background-color:#343d46;
+}
+
+canvas {
+  image-rendering:pixelated;
+}
+
+#game-screen {
+  display: none;
+}
+
+#restart-game-screen {
+  display: none; 
+}
