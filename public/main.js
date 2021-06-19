@@ -1,6 +1,160 @@
-const socket = io({
+const socket = io('http://localhost:3000', {
  transports: ['websocket', 'polling', 'flashsocket']
 });
+
+const LEVEL_ONE_WALLS = [
+  // 32m - easy single
+  {
+    x: 200,
+    y: 218,
+    height: 64
+  },
+  // 80m - easy double 
+  {
+    x: 300,
+    y: 170,
+    height: 160
+  },
+  // 140t - impossible
+  {
+    x: 450,
+    y: 110,
+    height: 140
+  },
+  // 140b - impossible
+  {
+    x: 550,
+    y: 250,
+    height: 140
+  },
+
+  // killer lesson
+  {
+    x: 650,
+    y: 164,
+    height: 16,
+    width: 128
+  },
+  {
+    x: 650,
+    y: 320,
+    height: 16,
+    width: 128
+  },
+
+  {
+    x: 650,
+    y: 249,
+    height: 2,
+    width: 128,
+    isKiller: true
+  },
+
+  {
+    x: 850,
+    y: 249,
+    height: 2,
+    width: 470,
+    isKiller: true
+  },
+
+  // get ups
+  {
+    x: 850,
+    y: 202,
+    height: 16,
+    width: 16
+  },
+  {
+    x: 850,
+    y: 282,
+    height: 16,
+    width: 16
+  },
+
+  // single jump
+  {
+    x: 895,
+    y: 202,
+    height: 16,
+    width: 16
+  },
+  {
+    x: 895,
+    y: 282,
+    height: 16,
+    width: 16
+  },
+
+  // double jump
+  {
+    x: 985,
+    y: 202,
+    height: 16,
+    width: 16
+  },
+  {
+    x: 985,
+    y: 282,
+    height: 16,
+    width: 16
+  },
+
+  // get up long
+  {
+    x: 1015,
+    y: 170,
+    height: 16,
+    width: 48
+  },
+  {
+    x: 1015,
+    y: 314,
+    height: 16,
+    width: 48
+  },
+
+  // drops
+  {
+    x: 1075,
+    y: 202,
+    height: 16,
+    width: 64
+  },
+  {
+    x: 1075,
+    y: 282,
+    height: 16,
+    width: 64
+  },
+  // drop enforcers
+  {
+    x: 1099,
+    y: 40,
+    height: 140,
+    width: 16
+  },
+  {
+    x: 1099,
+    y: 320,
+    height: 140,
+    width: 16
+  },
+
+  // double jump up
+  {
+    x: 1160,
+    y: 124,
+    height: 16,
+    width: 64
+  },
+  {
+    x: 1160,
+    y: 360,
+    height: 16,
+    width: 64
+  }
+];
 
 class Game {
   constructor () {
@@ -20,166 +174,22 @@ class Game {
     this.player1 = new Player(this.display.context, true, false, () => this.changePhase());
     this.player2 = new Player(this.display.context, false, true, () => this.changePhase());
 
-    this.allWalls = [
-      // 32m - easy single
-      {
-        x: 200,
-        y: 218,
-        height: 64
-      },
-      // 80m - easy double 
-      {
-        x: 300,
-        y: 170,
-        height: 160
-      },
-      // 140t - impossible
-      {
-        x: 450,
-        y: 110,
-        height: 140
-      },
-      // 140b - impossible
-      {
-        x: 550,
-        y: 250,
-        height: 140
-      },
-
-      // killer lesson
-      {
-        x: 650,
-        y: 164,
-        height: 16,
-        width: 128
-      },
-      {
-        x: 650,
-        y: 320,
-        height: 16,
-        width: 128
-      },
-
-      {
-        x: 650,
-        y: 249,
-        height: 2,
-        width: 128,
-        isKiller: true
-      },
-
-      {
-        x: 850,
-        y: 249,
-        height: 2,
-        width: 470,
-        isKiller: true
-      },
-
-      // get ups
-      {
-        x: 850,
-        y: 202,
-        height: 16,
-        width: 16
-      },
-      {
-        x: 850,
-        y: 282,
-        height: 16,
-        width: 16
-      },
-
-      // single jump
-      {
-        x: 895,
-        y: 202,
-        height: 16,
-        width: 16
-      },
-      {
-        x: 895,
-        y: 282,
-        height: 16,
-        width: 16
-      },
-
-      // double jump
-      {
-        x: 985,
-        y: 202,
-        height: 16,
-        width: 16
-      },
-      {
-        x: 985,
-        y: 282,
-        height: 16,
-        width: 16
-      },
-
-      // get up long
-      {
-        x: 1015,
-        y: 170,
-        height: 16,
-        width: 48
-      },
-      {
-        x: 1015,
-        y: 314,
-        height: 16,
-        width: 48
-      },
-
-      // drops
-      {
-        x: 1075,
-        y: 202,
-        height: 16,
-        width: 64
-      },
-      {
-        x: 1075,
-        y: 282,
-        height: 16,
-        width: 64
-      },
-      // drop enforcers
-      {
-        x: 1099,
-        y: 40,
-        height: 140,
-        width: 16
-      },
-      {
-        x: 1099,
-        y: 320,
-        height: 140,
-        width: 16
-      },
-
-      // double jump up
-      {
-        x: 1160,
-        y: 124,
-        height: 16,
-        width: 64
-      },
-      {
-        x: 1160,
-        y: 360,
-        height: 16,
-        width: 64
-      }
-    ].map((wall) => {
-      return new Wall(wall.x, wall.y, wall.height, wall.width, this.display.context, wall.isKiller);
-    });
+    this.loadLevelWalls(LEVEL_ONE_WALLS);
 
     this.isGameRunning = true;
     this.lastFrameTime = 0;
 
+    this.isTopPhased = false;
+    this.player1.setPhase(false);
+    this.player2.setPhase(true);
+
     this.gameLoop(0);
+  }
+
+  loadLevelWalls (wallsArray) {
+    this.allWalls = wallsArray.map((wall) => {
+      return new Wall(wall.x, wall.y, wall.height, wall.width, this.display.context, wall.isKiller);
+    });
   }
 
   gameLoop (timeStamp) {
@@ -323,23 +333,9 @@ class Game {
               height: wall.height,
               width: wall.width
             }
-          })
+          });
           return true;
         } else {
-          console.log({
-            player: {
-              x: player.x,
-              y: player.y,
-              dx: player.velocity_x,
-              dy: player.velocity_y
-            },
-            wall: {
-              x: wall.x,
-              y: wall.y,
-              height: wall.height,
-              width: wall.width
-            }
-          })
           // top collision, allow travel along the tops
           player.y = wall.y - player.height;
           player.velocity_y = 0;
@@ -363,6 +359,20 @@ class Game {
           // count the collision if theres a lot of y overlap
           ((wall.y + wall.height) - player.y) > 4
         ) {
+          console.log({
+            player: {
+              x: player.x,
+              y: player.y,
+              dx: player.velocity_x,
+              dy: player.velocity_y
+            },
+            wall: {
+              x: wall.x,
+              y: wall.y,
+              height: wall.height,
+              width: wall.width
+            }
+          });
           return true;
         } else {
           // top collision, allow travel along the tops
@@ -449,24 +459,24 @@ class Player {
 
     if (top && playerNumber === 1) {
       window.addEventListener("keydown", (event) => {
-        if (event.keyCode === 40 && event.repeat === false) {
+        if (event.keyCode === 16 && event.repeat === false) {
           if (!this.phased) {
             this.changePhase();
             socket.emit('changePhase', playerNumber);
           }
-        } else if ((event.keyCode === 32 || event.keyCode === 38) && event.repeat === false) {
+        } else if (event.keyCode === 32 && event.repeat === false) {
           this.jump();
           socket.emit('playerJump', playerNumber);
         }
       });
     } else if (!top && playerNumber === 2) {
       window.addEventListener("keydown", (event) => {
-        if (event.keyCode === 38 && event.repeat === false) {
+        if (event.keyCode === 16 && event.repeat === false) {
           if (!this.phased) {
             this.changePhase();
             socket.emit('changePhase', playerNumber);
           }
-        } else if ((event.keyCode === 32 || event.keyCode === 40) && event.repeat === false) {
+        } else if (event.keyCode === 32 && event.repeat === false) {
           this.jump();
           socket.emit('playerJump', playerNumber);
         }
@@ -488,6 +498,21 @@ class Player {
     } else {
       this.velocity_y = 20;
     }
+  }
+
+  reset () {
+    this.x = 0;
+    
+    if (this.isTop) {
+      this.y = 234;
+    } else {
+      this.y = 250;
+    }
+
+    this.velocity_x = 0;
+    this.velocity_y = 0;
+
+    this.setPhase(!this.isTop);
   }
 
   setPhase (isPhased) {
@@ -583,6 +608,7 @@ function restartGameOnClick () {
 socket.on('init', handleInit);
 socket.on('gameCode', handleGameCode);
 socket.on('startGame', handleStartGame);
+socket.on('restartGame', handleRestartGame);
 socket.on('stopGame', handleStopGame);
 
 socket.on('unknownGame', handleUnknownGame);
@@ -600,7 +626,6 @@ function handleGameCode (gameCode) {
 }
 
 function handleStartGame () {
-  restartGameScreen.style.display = "none";
   game.init();
 }
 
@@ -617,6 +642,20 @@ function handleUnknownGame () {
 function handleTooManyPlayers () {
   reset();
   alert("Game is in progress");
+}
+
+function handleRestartGame () {
+  restartGameScreen.style.display = "none";
+
+  game.loadLevelWalls(LEVEL_ONE_WALLS);
+  game.isGameRunning = true;
+  game.lastFrameTime = 0;
+
+  game.isTopPhased = false;
+  game.player1.reset();
+  game.player2.reset();
+
+  game.gameLoop(0);
 }
 
 function handlePlayerJump (playerNum) {

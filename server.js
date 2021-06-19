@@ -89,6 +89,7 @@ io.on('connection', (client) => {
   }
 
   function handlePlayerJump (playerNumber) {
+    console.log('handlePlayerJump', playerNumber)
     io.sockets.in(clientRooms[client.id]).emit('playerJump', playerNumber);
   }
 
@@ -97,7 +98,7 @@ io.on('connection', (client) => {
   }
 
   function handleRestartGame () {
-    startGame(clientRooms[client.id]);
+    io.sockets.in(clientRooms[client.id]).emit('restartGame');
   }
 });
 

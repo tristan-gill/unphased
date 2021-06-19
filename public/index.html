@@ -23,6 +23,12 @@
           <input id="room-code-input" type="text" placeholder="Enter room code">
           <button id="join-game-button" type="submit" class="btn btn-success">Join game</button>
         </div>
+
+        <div class="mt-4 card p-2">
+          <div class="fw-bold">Controls</div>
+          <div>Shift: Phase - allows you to pass through white walls without losing. You can still die on red walls.</div>
+          <div>Space: Jump - you can double jump</div>
+        </div>
       </div>
     </div>
 
@@ -31,7 +37,7 @@
       <div><canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas></div>
       <div id="restart-game-screen">
         <h3 class="text-white">You got to: <span id="game-progress-display"></span></h3>
-        <button id="restart-game-button" type="submit" class="btn btn-success">Restart</button>
+        <button id="restart-game-button" type="button" class="btn btn-success">Restart</button>
       </div>
     </div>
 
